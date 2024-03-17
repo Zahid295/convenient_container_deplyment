@@ -1,0 +1,90 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Udate package manager repositories
+      apt:
+        update_cache: yes
+
+    - name: Ensure old versions of Docker are not installed
+      apt:
+        name: "{{item}}"
+        state: absent
+      loop:
+      - docker
+      - docker-engine
+      - docker.io
+      - container
+      - runc
+
+    - name: Install Docker prerequisities
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+
+      loop:
+        - apt-transport-https
+        - ca-certifications
+        - curl
+        - gnup-agent
+        - software-properties-common
+
+    - name: Add Docker's official GPD key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+        state: present
+
+    - name: Install Docker Ce
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      service:
+      name: docker:
+      state: started
+      enabled: yes
+
+    - name: Install Docker SDK for python
+      pip:
+        name: docker
+        executable: pip3
+
+    - name: create webserver directory
+      file:
+        state: directory
+        path: "/webserver"
+        
+    - name: Copy static web page to webserver directory
+      copy:
+        src: "/root/var/www/pro.html"
+        dest: "/webserver"
+        remote_src: yes
+
+    - name: Pull Apache HTTP Server Docker image
+      docker_image:
+        name: "httpd"
+        source: pull
+        tag: latest
+
+    - name: Run Docker containter
+      docker_container:
+        name: "MyWebserver"
+        image: "http: latest"
+        state: started
+        exposed_ports:
+          - "80"
+        ports:
+          - "8080:80"
+        volumes:
+          - "/webserver:/usr/local/apache2/htdpcs"
+          
+           
+  
