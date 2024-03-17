@@ -85,6 +85,37 @@
           - "8080:80"
         volumes:
           - "/webserver:/usr/local/apache2/htdpcs"
+
+    - name: Create Docker network
+      docker_network:
+        name: supernetwork
+        ipam_config:
+          - subnet: 172.168.10.0/30
+
+    - name: Run Docker conatiner with network settings
+      docker_container:
+        name: "MyWebserver"
+        image: "httpd": latest
+        state: started
+        exposed_ports:
+          - "8080:80"
+        volumes:
+          - "/webserver:/usr/local/apache2/htdpcs"
+        networks:
+          - name: supernetwork
+            ipv4_address: 172.168.10.2
+
+    - name: Verify Apache service accessibility
+      uri:
+      url: http://172.168.10.2:80
+      return_conten: yes
+    register: result
+    failed_when: "'Apache' not i result.content"
+
+    - debug:
+        msg: "Apache service is accessible from the host machine."
+        when: "'Apache' in result.content"
+        
           
            
   

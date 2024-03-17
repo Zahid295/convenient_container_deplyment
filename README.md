@@ -11,3 +11,13 @@ The deployment procedure was automated with the help of Ansible playbook called 
 #### Task3: Configure Network Communication for Apache Docker Container
 Ansible modules are used to configure Docker container subnet and other network settings to make Apache service accessible. For this purpose, code is written in ansible playbook called create-project.yml. Code is written in ansible playbook to create docker network and the then to network settings are done such as setting the IP address and volumes.
 
+#### Conclusion
+This assessment project shows how to deploy web apps using Ansible and Docker in an efficient manner. We were able to save time and lower the risk of human mistake by automating the deployment procedure with the help of these tools.
+It shows that a project might be easily managed and tracked by using a GitHub repository for version control. The deployment procedure was greatly aided by the Ansible playbook. It involved setting up the Docker environment and launching the Docker container and also configuring the network settings for the Apache server.
+
+The virtual machine with IP address 172.168.10.2 was successfully used to launch the Docker container that was running an Apache server. Docker's usefulness for web hosting was demonstrated by the way the container was set up to serve a static webpage. 
+
+The significance of network settings for Docker deployments was also emphasized. Traffic from the host system was successfully permitted on the container network, and the Docker container was set up to operate on the 172.168.10.0/30 subnet.
+
+
+
